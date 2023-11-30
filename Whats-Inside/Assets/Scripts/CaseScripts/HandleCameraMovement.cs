@@ -5,6 +5,8 @@ using Cinemachine;
 
 public class HandleCameraMovement : MonoBehaviour
 {
+    public static HandleCameraMovement Interaction;
+
     [SerializeField] Camera cam;
     [SerializeField] GameObject vCam;
     [SerializeField] GameObject Case;
@@ -19,6 +21,11 @@ public class HandleCameraMovement : MonoBehaviour
 
     bool isFocusing;
     PuzzleFocus currentFocus;
+
+    private void Start()
+    {
+        if(Interaction == null) Interaction = this;
+    }
 
     private void Update()
     {
@@ -64,6 +71,21 @@ public class HandleCameraMovement : MonoBehaviour
         mousepos = cam.ScreenToWorldPoint(mousepos);
         Gizmos.color = Color.blue;
         Gizmos.DrawRay(cam.transform.position, mousepos - cam.transform.position);
+    }
+
+    public IngredientSO GetClickedItem()
+    {
+        Vector3 mousepos = Input.mousePosition;
+        mousepos.z = 10f;
+        mousepos = cam.ScreenToWorldPoint(mousepos);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(cam.transform.position, mousepos - cam.transform.position, out hit, Mathf.Infinity, puzzleLayer))
+        {
+            if(hit.collider.TryGetComponent(out IngredientSO component)) return component;
+        }
+        return null;
     }
 
     private void CameraDragMovement()

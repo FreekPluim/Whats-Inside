@@ -7,8 +7,11 @@ public class PuzzleFocus : MonoBehaviour
     public GameObject vCam;
     BoxCollider focusColider;
 
-    bool beingFocused;
+    public bool beingFocused;
     public bool simonSaysStarted;
+    public bool mazeStarted;
+
+    [SerializeField] GameObject puzzle;
 
     private void Start()
     {
@@ -22,10 +25,10 @@ public class PuzzleFocus : MonoBehaviour
 
         if (beingFocused)
         {
-            if(gameObject.TryGetComponent<SimonSays>(out SimonSays ss) && !simonSaysStarted)
+            if(puzzle.TryGetComponent<Puzzle>(out Puzzle pPuzzle))
             {
-                StartCoroutine(SimonSaysStartDelay(ss));
-                simonSaysStarted = true;
+                if (pPuzzle is SimonSaysReciever) HandleSimonSays(pPuzzle as SimonSaysReciever);
+                if (pPuzzle is MazeInput) HandleMaze(pPuzzle as MazeInput);
             }
         }
         else
@@ -34,11 +37,26 @@ public class PuzzleFocus : MonoBehaviour
         }
     }
 
-    IEnumerator SimonSaysStartDelay(SimonSays ss)
+    void HandleSimonSays(SimonSaysReciever simonSays)
+    {
+        if (!simonSaysStarted)
+        {
+            StartCoroutine(SimonSaysStartDelay(simonSays));
+            simonSaysStarted = true;
+        }
+    }
+
+    void HandleMaze(MazeInput maze)
+    {
+        
+    }
+
+    IEnumerator SimonSaysStartDelay(SimonSaysReciever ss)
     {
         yield return new WaitForSeconds(3f);
-
         ss.state = State.Start;
     }
+
+
 
 }

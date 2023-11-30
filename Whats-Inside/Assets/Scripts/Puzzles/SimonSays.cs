@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum State { Start, showingColors, PlayerInput, Won, Lost, UnFocused }
 
-public class SimonSays : MonoBehaviour
+public class SimonSays : Puzzle
 {
     public State state = State.UnFocused;
 
@@ -27,6 +27,7 @@ public class SimonSays : MonoBehaviour
     private void Start()
     {
         SetupMaterials();
+        //cam = Camera.main;
     }
     void SetupMaterials()
     {
