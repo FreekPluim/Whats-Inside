@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class MazeHub : MonoBehaviour
+public class FrequencyHub : MonoBehaviour
 {
     PuzzleFocus focus;
     [SerializeField] GameObject Input, Reciever;
@@ -13,8 +13,8 @@ public class MazeHub : MonoBehaviour
     public int type = 5;
     public bool won;
 
-    MazeReciever recieverScript;
-    MazeInput inputScript;
+    FrequencyReciever recieverScript;
+    FrequencyInput inputScript;
 
     private void Start()
     {
@@ -22,8 +22,8 @@ public class MazeHub : MonoBehaviour
         CheckPuzzleSide();
 
         focus = transform.parent.GetComponent<PuzzleFocus>();
-        recieverScript = Reciever.GetComponent<MazeReciever>();
-        inputScript = Input.GetComponent<MazeInput>();
+        recieverScript = Reciever.GetComponent<FrequencyReciever>();
+        inputScript = Input.GetComponent<FrequencyInput>();
     }
 
     private void Update()
@@ -63,7 +63,7 @@ public class MazeHub : MonoBehaviour
         } //P1 create random number
     }
 
-    public void SendPressedArrow(int PressedDirectionID)
+    public void SendPressedButton(int PressedDirectionID)
     {
         this.view.RPC("RPC_SendButtonPressed", RpcTarget.OthersBuffered, PressedDirectionID);
     }
@@ -83,14 +83,6 @@ public class MazeHub : MonoBehaviour
     [PunRPC]
     void RPC_SendButtonPressed(int buttonID)
     {
-        recieverScript.buttonPressed = buttonID; 
+        recieverScript.buttonPressed = buttonID;
     }
-
-    [PunRPC]
-    void RPC_ReachedGoal(bool pWon)
-    {
-        inputScript.won = pWon;
-    }
-
-
 }

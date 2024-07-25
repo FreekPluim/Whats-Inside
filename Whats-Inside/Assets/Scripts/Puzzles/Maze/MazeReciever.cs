@@ -17,6 +17,8 @@ public class MazeReciever : Puzzle
 
     [SerializeField] List<Node> nodes = new List<Node>();
     [SerializeField] Dictionary<Vector2Int, Node> nodeLocations = new Dictionary<Vector2Int, Node>();
+    [SerializeField] GameObject lightOn;
+    [SerializeField] GameObject lightOff;
     Node playerNode;
     Node targetNode;
 
@@ -72,12 +74,6 @@ public class MazeReciever : Puzzle
             }
             buttonPressed = reset;
         }
-
-        if (playerNode.x == targetNode.x && playerNode.y == targetNode.y)
-        {
-            won = true;
-            stream.SendIfWon(won);
-        }
     }
 
     void handleUp()
@@ -114,12 +110,29 @@ public class MazeReciever : Puzzle
     {
         if (nodeLocations.ContainsKey(new Vector2Int(playerNode.x + 1, playerNode.y)))
         {
-            if (nodeLocations[new Vector2Int(playerNode.x + 1, playerNode.y)].nodeType == Nodes.walkable)
+            Node currentNode = nodeLocations[new Vector2Int(playerNode.x, playerNode.y)];
+            Node nextNode = nodeLocations[new Vector2Int(playerNode.x + 1, playerNode.y)];
+            if (nextNode.nodeType == Nodes.walkable)
             {
-                setPlayerNode(nodeLocations[new Vector2Int(playerNode.x, playerNode.y)], nodeLocations[new Vector2Int(playerNode.x + 1, playerNode.y)]);
+                setPlayerNode(currentNode, nextNode);
             }
+            CheckTarget(currentNode, nextNode);
         }
     }
+
+    void CheckTarget(Node currentNode, Node nextNode)
+    {
+        if(nextNode.nodeType == Nodes.target)
+        {
+            setPlayerNode(currentNode, nextNode);
+            won = true;
+            stream.SendIfWon(won);
+
+            lightOff.SetActive(false);
+            lightOn.SetActive(false);
+        }
+    }
+
     private void setPlayerNode(Node oldNode, Node newNode)
     {
         oldNode.nodeType = Nodes.walkable;

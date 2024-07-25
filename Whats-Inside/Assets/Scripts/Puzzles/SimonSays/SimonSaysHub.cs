@@ -5,6 +5,8 @@ using Photon.Pun;
 
 public class SimonSaysHub : MonoBehaviourPun
 {
+    PuzzleFocus focus;
+
     //RPC VALUES
     int lastType = 5;
     public int type = 5;
@@ -25,6 +27,7 @@ public class SimonSaysHub : MonoBehaviourPun
         view = GetComponent<PhotonView>();
         CheckPuzzleSide();
 
+        focus = transform.parent.GetComponent<PuzzleFocus>();
         recieverScript = Reciever.GetComponent<SimonSaysReciever>();
         inputScript = Input.GetComponent<SimonSaysInput>();
     }
@@ -46,11 +49,17 @@ public class SimonSaysHub : MonoBehaviourPun
             {
                 Input.SetActive(true);
                 Reciever.SetActive(false);
+
+                focus.OnPuzzleFocus.AddListener(inputScript.OnFocused);
+                focus.OnPuzzleUnFocus.AddListener(inputScript.OnUnFocus);
             } //Is Input
             else
             {
                 Input.SetActive(false);
                 Reciever.SetActive(true);
+
+                focus.OnPuzzleFocus.AddListener(recieverScript.OnFocused);
+                focus.OnPuzzleUnFocus.AddListener(recieverScript.OnUnFocus);
             } //Is Reciever
             lastType = type;
         }

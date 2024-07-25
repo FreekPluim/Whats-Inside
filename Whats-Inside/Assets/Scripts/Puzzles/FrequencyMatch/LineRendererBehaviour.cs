@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LineRendererBehaviour: MonoBehaviour
 {
-    LineRenderer lr;
+    [SerializeField] LineRenderer lr;
     Vector3[] pos;
 
     public int points;

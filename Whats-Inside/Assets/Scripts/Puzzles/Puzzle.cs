@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class Puzzle : MonoBehaviour
 {
-    
+    public virtual void OnFocused() { }
+
+    public virtual void OnUnFocus() { }
 }

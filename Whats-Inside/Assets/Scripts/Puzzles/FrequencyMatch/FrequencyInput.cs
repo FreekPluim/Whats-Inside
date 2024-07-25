@@ -2,27 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeInput : Puzzle
+public class FrequencyInput : Puzzle
 {
+    PuzzleFocus focus;
+    FrequencyHub stream;
+
     [SerializeField] List<GameObject> buttons = new List<GameObject>();
     [SerializeField] Camera cam;
-    [SerializeField] LayerMask mazeLayer;
+    [SerializeField] LayerMask frequencyLayer;
+
+    [SerializeField] GameObject lightOff;
+    [SerializeField] GameObject lightOn;
 
     Dictionary<GameObject, int> direction = new Dictionary<GameObject, int>();
 
-    MazeHub stream;
-    PuzzleFocus focus;
-
-    public bool won;
+    bool won = false;
 
     private void Start()
     {
         focus = transform.parent.parent.GetComponent<PuzzleFocus>();
-        stream = transform.parent.GetComponent<MazeHub>();
+        stream = transform.parent.GetComponent<FrequencyHub>();
 
-        for (int i = 0; i < buttons.Count; i++)
+        for (int i = 1; i < buttons.Count+1; i++)
         {
-            direction.Add(buttons[i], i);
+            direction.Add(buttons[i-1], i);
         }
     }
 
@@ -45,12 +48,12 @@ public class MazeInput : Puzzle
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(cam.transform.position, mousepos - cam.transform.position, out hit, Mathf.Infinity, mazeLayer))
+            if (Physics.Raycast(cam.transform.position, mousepos - cam.transform.position, out hit, Mathf.Infinity, frequencyLayer))
             {
-                checkHit(ref hit, buttons[0]);
-                checkHit(ref hit, buttons[1]);
-                checkHit(ref hit, buttons[2]);
-                checkHit(ref hit, buttons[3]);
+                foreach (var button in buttons)
+                {
+                    checkHit(ref hit, button);
+                }
             }
         }
     }
@@ -59,7 +62,7 @@ public class MazeInput : Puzzle
     {
         if (hit.collider.gameObject == obj)
         {
-            stream.SendPressedArrow(direction[obj]);
+            stream.SendPressedButton(direction[obj]);
         }
     }
 
@@ -67,7 +70,8 @@ public class MazeInput : Puzzle
     {
         if (stream.won)
         {
-            
+            lightOff.SetActive(false);
+            lightOn.SetActive(true);
         }
     }
 }

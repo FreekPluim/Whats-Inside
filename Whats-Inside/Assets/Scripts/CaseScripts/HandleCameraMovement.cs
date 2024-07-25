@@ -35,11 +35,22 @@ public class HandleCameraMovement : MonoBehaviour
 
         RaycastHit hit;
         if (Input.GetMouseButtonDown(0)) {
-            if (Physics.Raycast(cam.transform.position, mousepos - cam.transform.position, out hit, Mathf.Infinity, puzzleLayer))
+            if (Physics.Raycast(cam.transform.position, mousepos - cam.transform.position, out hit, Mathf.Infinity))
             {
-                currentFocus = hit.collider.GetComponent<PuzzleFocus>();
-                currentFocus.vCam.SetActive(true);
-                isFocusing = true;
+                if(hit.transform.tag == "Puzzle")
+                {
+                    if(currentFocus != null && isFocusing)
+                    {
+                        currentFocus.vCam.SetActive(false);
+                        currentFocus.OnPuzzleUnFocus?.Invoke();
+                    }
+
+                    currentFocus = hit.collider.GetComponent<PuzzleFocus>();
+                    currentFocus.vCam.SetActive(true);
+                    if(currentFocus.OnPuzzleFocus != null) currentFocus.OnPuzzleFocus?.Invoke();
+                    isFocusing = true;
+                }
+
             }
         }
         if (!isFocusing)
@@ -58,6 +69,7 @@ public class HandleCameraMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             currentFocus.vCam.SetActive(false);
+            currentFocus.OnPuzzleUnFocus?.Invoke();
             currentFocus = null;
             isFocusing = false;
         }

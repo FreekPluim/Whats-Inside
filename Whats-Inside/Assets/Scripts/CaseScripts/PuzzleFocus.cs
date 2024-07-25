@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PuzzleFocus : MonoBehaviour
 {
+
     public GameObject vCam;
     BoxCollider focusColider;
 
     public bool beingFocused;
     public bool simonSaysStarted;
     public bool mazeStarted;
+    public bool frequencyStarted;
 
     [SerializeField] GameObject puzzle;
+
+    [HideInInspector] public UnityEvent OnPuzzleFocus;
+    [HideInInspector] public UnityEvent OnPuzzleUnFocus;
 
     private void Start()
     {
@@ -49,6 +55,11 @@ public class PuzzleFocus : MonoBehaviour
     void HandleMaze(MazeInput maze)
     {
         
+    }
+
+    void HandleFrequency()
+    {
+
     }
 
     IEnumerator SimonSaysStartDelay(SimonSaysReciever ss)
